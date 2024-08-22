@@ -14,6 +14,7 @@ A Lua module made for Psych Engine (tested in 0.7.3 only)
 - [ ] Checkbox
 - [ ] Drop-down List
 - [ ] Text Input
+- [ ] Slider
 
 ## How do I add it to my game?
 > To actually access the module in-game, you must first put it alongside the other main folders where the <kbd>exe</kbd> is.

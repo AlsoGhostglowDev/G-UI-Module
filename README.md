@@ -7,6 +7,14 @@ A Lua module made for Psych Engine (tested in 0.7.3 only)
 > ### Example:
 > ![image](https://github.com/user-attachments/assets/e21cfdd5-3984-46c6-b33b-1b0619757fae)
 
+## Features:
+- [X] Mouse-interactive GUI
+- [X] Move-able GUI with Mouse drag
+- [ ] Multiple Group Support
+- [ ] Checkbox
+- [ ] Drop-down List
+- [ ] Text Input
+
 ## How do I add it to my game?
 > To actually access the module in-game, you must first put it alongside the other main folders where the <kbd>exe</kbd> is.
 > ![image](https://github.com/user-attachments/assets/1b39ed1a-039b-448f-8428-bcdcec5d4b0c)

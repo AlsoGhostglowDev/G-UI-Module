@@ -10,4 +10,18 @@ function helper.mouseOverlaps(obj, camera)
     return (mX > x) and (mX < x + width) and (mY > y) and (mY < y + height)
 end
 
+function helper.getTag(boxName, type) 
+    local suffix = 'UiText'
+    if type:lower() == 'bg' then suffix = 'UiBG' end
+    return boxName .. suffix
+end
+
+function helper.setBoxProperty(boxName, type, property, value)
+    setProperty(helper.getTag(boxName, type) .. '.' .. property, value)
+end
+
+function helper.getBoxProperty(boxName, type, property)
+    return getProperty(helper.getTag(boxName, type) .. '.' .. property)
+end
+
 return helper

@@ -190,11 +190,12 @@ end
 
 function uiTab.update()
     uiTab.curHovered = {nil, nil}
+    helper.update()
     for i, boxData in ipairs(uiTab.boxes) do
         local group, name = boxData[1], boxData[2]
         local grpProps = uiTab.getGroupProperties(group)
 
-        if helper.mouseOverlaps(name .. 'UiBG', 'camOther') then
+        if helper.mouseOverlaps(name .. 'UiBG', 'camOther') and getProperty(name ..'UiBG.visible') then
             uiTab.curHovered = {group, name}
             callMethod('callOnLuas', {'onBoxHover', {name, group}})
             if mouseClicked('left') then

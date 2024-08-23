@@ -12,7 +12,7 @@ A Lua module made for Psych Engine (tested in 0.7.3 only)
 - [X] Move-able GUI with Mouse drag
 - [X] Multiple Group Support
 - [X] Checkbox
-- [ ] Drop-down List
+- [X] Drop-down List
 - [ ] Text Input
 - [ ] Slider
 

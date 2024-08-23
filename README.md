@@ -5,7 +5,7 @@ A Lua module made for Psych Engine (tested in 0.7.3 only)
 > This module simply only adds nice looking interactive UI to your game for you to show info, etc.
 > 
 > ### Example:
-> ![image](https://github.com/user-attachments/assets/e21cfdd5-3984-46c6-b33b-1b0619757fae)
+> ![image](https://github.com/user-attachments/assets/1ef94b23-e5b8-44cc-9fcf-b66113c0ba43)
 
 ## Features:
 - [X] Mouse-interactive GUI

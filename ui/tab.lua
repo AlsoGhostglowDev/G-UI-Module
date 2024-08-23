@@ -1,7 +1,7 @@
 local uiTab = {}
 local helper = require 'ui/helper'
 
--- should contain: { .. (groups) .. }
+-- should contain: { .. {groupName, x, y, curSelected} .. }
 uiTab.groups = {}
 -- should contain: { .. {group, tag} .. }
 uiTab.boxes = {}
@@ -11,13 +11,28 @@ uiTab.curSelected = {}
 uiTab.curHovered = {}
 -- should contain: { .. {group, attachedSprite's tag, offsetX, offsetY } .. }
 uiTab.attachedSprites = {}
--- should contain: { .. {tag, txt, func, alwaysUpdate, group} .. }
+-- should contain: { .. {tag, txt, func, alwaysUpdate, section, group} .. }
 uiTab.stats = {}
 
 local function getTag(boxName, type) 
     local suffix = 'UiText'
     if type:lower() == 'bg' then suffix = 'UiBG' end
     return boxName .. suffix
+end
+
+local function indexOfGroup(grp)
+    for index, v in ipairs(uiTab.groups) do
+        if v[1] == grp then return index end
+    end
+    return -1
+end
+
+local function getGroupCurSelected(grp)
+    return uiTab.groups[indexOfGroup(grp)][4]
+end
+
+local function setGroupCurSelected(grp, val)
+    uiTab.groups[indexOfGroup(grp)][4] = val
 end
 
 local function setBoxProperty(boxName, type, property, value)
@@ -151,7 +166,7 @@ function uiTab.makeStatusText(tag, text, func, alwaysUpdate, group, selection, x
         setTextSize(tag, 20)
         setTextAlignment(tag, 'left')
         setTextBorder(tag, 0)
-        table.insert(uiTab.stats, {tag, text, func, alwaysUpdate, selection})
+        table.insert(uiTab.stats, {tag, text, func, alwaysUpdate, selection, group})
         uiTab.addAttachedSprite(tag, group, (x or 0), (y or 0))
 
         uiTab.reloadObjs()
@@ -159,8 +174,12 @@ function uiTab.makeStatusText(tag, text, func, alwaysUpdate, group, selection, x
 end
 
 function uiTab.reloadObjs()
-    for _, statData in ipairs(uiTab.stats) do
-        setProperty(statData[1]..'.visible', statData[5] == uiTab.curSelected[2])
+    for i, grp in ipairs(uiTab.groups) do
+        for _, statData in ipairs(uiTab.stats) do
+            if statData[6] == grp[1] then
+                setProperty(statData[1]..'.visible', statData[5] == getGroupCurSelected(grp[1]))
+            end
+        end
     end
 end
 
@@ -174,12 +193,15 @@ function uiTab.update()
             uiTab.curHovered = {group, name}
             callMethod('callOnLuas', {'onBoxHover', {name, group}})
             if mouseClicked('left') then
-                uiTab.curSelected = {group, name}
+                if getGroupCurSelected(group) ~= name then
+                    setGroupCurSelected(group, name)
+                else
+                    setGroupCurSelected(group, nil)
+                end
                 callMethod('callOnLuas', {'onBoxClick', {name, group}})
 
                 uiTab.reloadObjs()
             elseif mouseClicked('right') then
-                uiTab.curSelected = {}
                 callMethod('callOnLuas', {'onBoxClickRight', {name, group}})
             elseif mousePressed('left') then
                 for _, v in ipairs(uiTab.groups) do
@@ -194,12 +216,12 @@ function uiTab.update()
         uiTab.forEachMembers(group, function(i, bn)
             setBoxProperty(bn, 'bg', 'x', grpProps[2] + (120 * i))
             setBoxProperty(bn, 'bg', 'y', grpProps[3])
-            setBoxProperty(bn, 'txt', 'x', grpProps[2] + (120 * i))
+            setBoxProperty(bn, 'txt', 'x', getBoxProperty(bn, 'bg', 'x') + ((getBoxProperty(bn, 'bg', 'width') - getBoxProperty(bn, 'text', 'width')) / 2))
             setBoxProperty(bn, 'txt', 'y', grpProps[3])
         end)
 
         setBoxProperty(name, 'bg', 'color', 0x000000)
-        setBoxProperty(name, 'bg', 'alpha', 0.6)
+        setBoxProperty(name, 'bg', 'alpha', 0.85)
         setBoxProperty(name, 'txt', 'color', 0xFFFFFF)
 
         setProperty(group .. 'UiBG.x', grpProps[2] + 120)
@@ -207,11 +229,11 @@ function uiTab.update()
 
         if (uiTab.curHovered[1] == group and uiTab.curHovered[2] == name) then
             setBoxProperty(name, 'bg', 'color', 0x888888)
-            setBoxProperty(name, 'bg', 'alpha', 0.7)
-            setBoxProperty(name, 'txt', 'color', 0xFFFFFF)
+            setBoxProperty(name, 'bg', 'alpha', 0.8)
+            setBoxProperty(name, 'txt', 'color', 0x000000)
         end
 
-        if (uiTab.curSelected[1] == group and uiTab.curSelected[2] == name) then
+        if (getGroupCurSelected(group) == name) then
             setBoxProperty(name, 'bg', 'color', 0xFFFFFF)
             setBoxProperty(name, 'bg', 'alpha', 1)
             setBoxProperty(name, 'txt', 'color', 0x000000)
@@ -224,9 +246,11 @@ function uiTab.update()
         setProperty(spr .. '.y', getProperty(grp .. 'UiBG.y') + offsetY)
     end
 
-    for _, statData in ipairs(uiTab.stats) do
-        if statData[4] and statData[5] == uiTab.curSelected[2] then
-            setTextString(statData[1], statData[2]:format(statData[3]()))
+    for _, grp in ipairs(uiTab.groups) do
+        for _, statData in ipairs(uiTab.stats) do
+            if statData[4] and statData[5] == getGroupCurSelected(grp[1]) and statData[6] == grp[1] then
+                setTextString(statData[1], statData[2]:format(statData[3]()))
+            end
         end
     end
 end

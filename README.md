@@ -10,7 +10,7 @@ A Lua module made for Psych Engine (tested in 0.7.3 only)
 ## Features:
 - [X] Mouse-interactive GUI
 - [X] Move-able GUI with Mouse drag
-- [ ] Multiple Group Support
+- [X] Multiple Group Support
 - [ ] Checkbox
 - [ ] Drop-down List
 - [ ] Text Input
